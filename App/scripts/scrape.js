@@ -1,64 +1,176 @@
-// scrape script
-// =============
+// // scrape script
+// // =============
 
-// Require axios and cheerio, making our scrapes possible
-var axios = require("axios");
-var cheerio = require("cheerio");
+// // Require axios and cheerio, making our scrapes possible
+// var axios = require("axios");
+// var cheerio = require("cheerio");
 
-// This function will scrape the NYTimes website
-var scrape = function() {
-  // Scrape the NYTimes website
-  return axios.get("http://www.nytimes.com").then(function(res) {
-    var $ = cheerio.load(res.data);
-    // Make an empty array to save our article info
-    var articles = [];
+// // This function will scrape the NYTimes website
+// var scrape = function() {
+//   // Scrape the NYTimes website
+//   return axios.get("www.ibtimes.com").then(function(res) {
+//     var $ = cheerio.load(res.data);
+//     // Make an empty array to save our article info
+//     var articles = [];
 
-    // Now, find and loop through each element that has the "theme-summary" class
-    // (i.e, the section holding the articles)
-    $(".theme-summary").each(function(i, element) {
-      // In each .theme-summary, we grab the child with the class story-heading
+//     // Now, find and loop through each element that has the "theme-summary" class
+//     // (i.e, the section holding the articles)
+//     $(".theme-summary").each(function(i, element) {
+//       // In each .theme-summary, we grab the child with the class story-heading
 
-      // Then we grab the inner text of the this element and store it
-      // to the head variable. This is the article headline
-      var head = $(this)
-        .children(".story-heading")
-        .text()
-        .trim();
+//       // Then we grab the inner text of the this element and store it
+//       // to the head variable. This is the article headline
+//       var head = $(this)
+//         .children(".story-heading")
+//         .text()
+//         .trim();
 
-      // Grab the URL of the article
-      var url = $(this)
-        .children(".story-heading")
-        .children("a")
-        .attr("href");
+//       // Grab the URL of the article
+//       var url = $(this)
+//         .children(".story-heading")
+//         .children("a")
+//         .attr("href");
 
-      // Then we grab any children with the class of summary and then grab it's inner text
-      // We store this to the sum variable. This is the article summary
-      var sum = $(this)
-        .children(".summary")
-        .text()
-        .trim();
+//       // Then we grab any children with the class of summary and then grab it's inner text
+//       // We store this to the sum variable. This is the article summary
+//       var sum = $(this)
+//         .children(".summary")
+//         .text()
+//         .trim();
 
-      // So long as our headline and sum and url aren't empty or undefined, do the following
-      if (head && sum && url) {
-        // This section uses regular expressions and the trim function to tidy our headlines and summaries
-        // We're removing extra lines, extra spacing, extra tabs, etc.. to increase to typographical cleanliness.
-        var headNeat = head.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
-        var sumNeat = sum.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
+//       // So long as our headline and sum and url aren't empty or undefined, do the following
+//       if (head && sum && url) {
+//         // This section uses regular expressions and the trim function to tidy our headlines and summaries
+//         // We're removing extra lines, extra spacing, extra tabs, etc.. to increase to typographical cleanliness.
+//         var headNeat = head.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
+//         var sumNeat = sum.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
 
-        // Initialize an object we will push to the articles array
+//         // Initialize an object we will push to the articles array
 
-        var dataToAdd = {
-          headline: headNeat,
-          summary: sumNeat,
-          url: url
-        };
+//         var dataToAdd = {
+//           headline: headNeat,
+//           summary: sumNeat,
+//           url: url
+//         };
 
-        articles.push(dataToAdd);
-      }
-    });
-    return articles;
+//         articles.push(dataToAdd);
+//       }
+//     });
+//     return articles;
+//   });
+// };
+
+// // Export the function, so other files in our backend can use it
+// module.exports = scrape;
+
+var express = require("express");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+var mongoose = require("mongoose");
+
+var PORT = 3000;
+
+// Require all models
+var db = require("./models");
+
+// Initialize Express
+var app = express();
+
+// Configure middleware
+
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Use body-parser for handling form submissions
+app.use(bodyParser.urlencoded({ extended: true }));
+// Use express.static to serve the public folder as a static directory
+app.use(express.static("public"));
+
+// By default mongoose uses callbacks for async queries, we're setting it to use promises (.then syntax) instead
+// Connect to the Mongo DB
+mongoose.Promise = Promise;
+mongoose.connect("mongodb://localhost/populate", {
+  useMongoClient: true
+});
+
+// When the server starts, create and save a new Library document to the db
+// The "unique" rule in the Library model's schema will prevent duplicate libraries from being added to the server
+db.Library.create({ name: "Campus Library" })
+  .then(function (dbLibrary) {
+    // If saved successfully, print the new Library document to the console
+    console.log(dbLibrary);
+  })
+  .catch(function (err) {
+    // If an error occurs, print it to the console
+    console.log(err.message);
   });
-};
 
-// Export the function, so other files in our backend can use it
-module.exports = scrape;
+// Routes
+
+// POST route for saving a new Book to the db and associating it with a Library
+app.post("/submit", function (req, res) {
+  // Create a new Book in the database
+  db.Book.create(req.body)
+    .then(function (dbBook) {
+      // If a Book was created successfully, find one library (there's only one) and push the new Book's _id to the Library's `books` array
+      // { new: true } tells the query that we want it to return the updated Library -- it returns the original by default
+      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+      return db.Library.findOneAndUpdate({}, { $push: { books: dbBook._id } }, { new: true });
+    })
+    .then(function (dbLibrary) {
+      // If the Library was updated successfully, send it back to the client
+      res.json(dbLibrary);
+    })
+    .catch(function (err) {
+      // If an error occurs, send it back to the client
+      res.json(err);
+    });
+});
+
+// Route for getting all books from the db
+app.get("/books", function (req, res) {
+  // Using our Book model, "find" every book in our db
+  db.Book.find({})
+    .then(function (dbBook) {
+      // If any Books are found, send them to the client
+      res.json(dbBook);
+    })
+    .catch(function (err) {
+      // If an error occurs, send it back to the client
+      res.json(err);
+    });
+});
+
+// Route for getting all libraries from the db
+app.get("/library", function (req, res) {
+  // Using our Library model, "find" every library in our db
+  db.Library.find({})
+    .then(function (dbLibrary) {
+      // If any Libraries are found, send them to the client
+      res.json(dbLibrary);
+    })
+    .catch(function (err) {
+      // If an error occurs, send it back to the client
+      res.json(err);
+    });
+});
+
+// Route to see what library looks like WITH populating
+app.get("/populated", function (req, res) {
+  // Using our Library model, "find" every library in our db and populate them with any associated books
+  db.Library.find({})
+    // Specify that we want to populate the retrieved libraries with any associated books
+    .populate("books")
+    .then(function (dbLibrary) {
+      // If any Libraries are found, send them to the client with any associated Books
+      res.json(dbLibrary);
+    })
+    .catch(function (err) {
+      // If an error occurs, send it back to the client
+      res.json(err);
+    });
+});
+
+// Start the server
+app.listen(PORT, function () {
+  console.log("App running on port " + PORT + "!");
+});
