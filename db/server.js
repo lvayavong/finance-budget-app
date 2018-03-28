@@ -23,7 +23,7 @@ app.use(express.static("public"));
 // By default mongoose uses callbacks for async queries, we're setting it to use promises (.then syntax) instead
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/populate", {
+mongoose.connect("mongodb://localhost/BudgetManager", {
   useMongoClient: true
 });
 
@@ -49,7 +49,7 @@ app.post("/submit", function(req, res) {
       // If a Budget was created successfully, find one Account (there's only one) and push the new Budget's _id to the Account's `Budgets` array
       // { new: true } tells the query that we want it to return the updated Account -- it returns the original by default
       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      return db.Account.findOneAndUpdate({}, { $push: { Budgets: dbBudget._id } }, { new: true });
+      return db.Account.findOneAndUpdate({}, { $push: { budgets: dbBudget._id } }, { new: true });
     })
     .then(function(dbAccount) {
       // If the Account was updated successfully, send it back to the client
@@ -62,7 +62,7 @@ app.post("/submit", function(req, res) {
 });
 
 // Route for getting all Budgets from the db
-app.get("/Budgets", function(req, res) {
+app.get("/budgets", function(req, res) {
   // Using our Budget model, "find" every Budget in our db
   db.Budget.find({})
     .then(function(dbBudget) {
@@ -76,7 +76,7 @@ app.get("/Budgets", function(req, res) {
 });
 
 // Route for getting all libraries from the db
-app.get("/Account", function(req, res) {
+app.get("/account", function(req, res) {
   // Using our Account model, "find" every Account in our db
   db.Account.find({})
     .then(function(dbAccount) {
@@ -94,7 +94,7 @@ app.get("/populated", function(req, res) {
   // Using our Account model, "find" every Account in our db and populate them with any associated Budgets
   db.Account.find({})
     // Specify that we want to populate the retrieved libraries with any associated Budgets
-    .populate("Budgets")
+    .populate("budgets")
     .then(function(dbAccount) {
       // If any Libraries are found, send them to the client with any associated Budgets
       res.json(dbAccount);

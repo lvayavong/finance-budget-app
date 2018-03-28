@@ -9,7 +9,7 @@ var BudgetSchema = new Schema({
   // `author` must be of type String
   client: String,
   // `title` must be of type String
-  fund: String
+  amount: Number
 });
 
 // This creates our model from the above schema, using mongoose's model method
