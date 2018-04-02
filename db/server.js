@@ -61,24 +61,6 @@ app.post("/submit", function(req, res) {
     });
 });
 
-// app.post("/submit", function (req, res) {
-//   // Create a new Budget in the database
-//   db.Budget.create(req.body)
-//     .then(function (dbBudget) {
-//       // If a Budget was created successfully, find one Account (there's only one) and push the new Budget's _id to the Account's `Budgets` array
-//       // { new: true } tells the query that we want it to return the updated Account -- it returns the original by default
-//       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-//       return db.Account.findOneAndUpdate({}, { $push: { budgets: dbBudget._id } }, { new: true });
-//     })
-//     .then(function (dbAccount) {
-//       // If the Account was updated successfully, send it back to the client
-//       res.json(dbAccount);
-//     })
-//     .catch(function (err) {
-//       // If an error occurs, send it back to the client
-//       res.json(err);
-//     });
-// });
 app.post("/update/:id", function (req, res) { 
   console.log(req.body);
   
@@ -91,7 +73,47 @@ app.post("/update/:id", function (req, res) {
   }
 )
 })
+app.post("/updateclient/:client", function (req, res) {
+  console.log(req.body);
 
+  db.Budget.findOneAndUpdate({
+      client: req.params.client
+    }, req.body, {
+      new: true
+    },
+
+    (err, budget) => {
+      // Handle any possible database errors
+      if (err) return res.status(500).send(err);
+      return res.send(budget);
+    }
+  )
+})
+app.get("/remove/:id", function (req, res) {
+  console.log(req.body);
+
+  db.Budget.findByIdAndRemove({
+      _id: req.params.id},
+
+    (err, budget) => {
+      // Handle any possible database errors
+      if (err) return res.status(500).send(err);
+      return res.send(budget);
+    }
+  )
+})
+app.get("/removeall/", function (req, res) {
+  console.log(req.body);
+
+  db.Budget.remove({},
+
+    (err, budget) => {
+      // Handle any possible database errors
+      if (err) return res.status(500).send(err);
+      return res.send(budget);
+    }
+  )
+})
 // Route for getting all Budgets from the db
 app.get("/budgets", function(req, res) {
   // Using our Budget model, "find" every Budget in our db
