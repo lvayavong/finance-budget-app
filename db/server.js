@@ -89,11 +89,11 @@ app.post("/updateclient/:client", function (req, res) {
     }
   )
 })
-app.get("/remove/:id", function (req, res) {
+app.get("/removeclient/:client", function (req, res) {
   console.log(req.body);
 
-  db.Budget.findByIdAndRemove({
-      _id: req.params.id},
+  db.Budget.findOneAndRemove({
+      _client: req.params.client},
 
     (err, budget) => {
       // Handle any possible database errors
