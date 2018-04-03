@@ -1,4 +1,5 @@
-$("button").click(gather)
+$("button").click(gather);
+$("button").click(console.log("alert"));
 $(document).ready(centerme);
 $(window).resize(centerme);
 
@@ -32,9 +33,14 @@ function gather() {
   }
 }
 
+$("#submit").on('click', function(event){
+  event.preventDefault();
+  console.log("alert");
+})
+
+
 function centerme() {
 boiheight = $(".center-meh-boi").height();
 middle = boiheight / 2;
 $(".center-meh-boi").css("margin-top","-" + middle + "px");
-console.log(boiheight);
 }
