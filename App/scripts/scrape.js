@@ -8,28 +8,29 @@ var cheerio = require("cheerio");
 // This function will scrape the NYTimes website
 var scrape = function() {
   // Scrape the NYTimes website
-  return axios.get("www.ibtimes.com").then(function(res) {
+  return axios.get("http://www.ibtimes.com/").then(function(res) {
     var $ = cheerio.load(res.data);
     // Make an empty array to save our article info
     var articles = [];
 
     // Now, find and loop through each element that has the "theme-summary" class
     // (i.e, the section holding the articles)
-    $(".theme-summary").each(function(i, element) {
+    $(".info").each(function(i, element) {
       // In each .theme-summary, we grab the child with the class story-heading
 
       // Then we grab the inner text of the this element and store it
       // to the head variable. This is the article headline
       var head = $(this)
-        .children(".story-heading")
+        .children("h1")
         .text()
         .trim();
 
       // Grab the URL of the article
       var url = $(this)
-        .children(".story-heading")
+        .children("h1")
         .children("a")
         .attr("href");
+      url = "http://www.ibtimes.com" + url
 
       // Then we grab any children with the class of summary and then grab it's inner text
       // We store this to the sum variable. This is the article summary
@@ -52,6 +53,7 @@ var scrape = function() {
           summary: sumNeat,
           url: url
         };
+console.log(dataToAdd);
 
         articles.push(dataToAdd);
       }
