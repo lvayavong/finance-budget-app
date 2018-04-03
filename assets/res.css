@@ -1,0 +1,40 @@
+html {
+  font-size: 18px;
+}
+
+body {
+  font-size: 1rem;
+}
+
+h1 { text-align: center;
+     margin-bottom: 25px;
+}
+
+p { text-align: center;
+    margin: 0 0 10px;
+}
+
+#full-size {
+    height: 100% width: 100%;
+    overflow: hidden;
+}
+
+i {
+  background-repeat: no-repeat;
+  background-size: 24px;
+  background-position: center;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+}
+
+.jumbotron {
+    background-color: rgb(1, 1, 62);
+    color: white;
+}
+
+.my-4 {
+  background-color: rgb(67, 155, 58);
+}
+
+

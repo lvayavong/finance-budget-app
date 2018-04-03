@@ -7,7 +7,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="assets/style.css">
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+<!-- <link rel="script" type="text/javascript" href="assets/chart.js"> -->
+<!-- <script type="text/javascript"> function displayResults() {console.log("alert");} </script> -->
 </head>
 
 <body>
@@ -28,7 +29,8 @@
   <input class="form-control input-lg" type="text" id="utilities" placeholder="Utilities"/>
   <input class="form-control input-lg" type="text" id="insurance" placeholder="Insurance"/>
       </form>
-      <button type="button" class="btn btn-outline-secondary btn-lg">Secondary</button>
+      <button type="button" onClick="gather()" class="btn btn-outline-secondary btn-lg">Submit</button>
+      <!-- <button id= "submit" onclick= "displayResults()" type="button" class="btn btn-outline-secondary btn-lg">Submit</button> -->
       </div>
     </div>
     <div class="col-sm-4">
@@ -36,7 +38,7 @@
         <h1 class="title">Results</h1>
         <span class="emoji">
         </span>
-        <div class="results-data">
+        <div id= "results" class="results-data">
           <p>Hit the submit button to see your results!</p>
         </div>
 </div>
@@ -44,4 +46,6 @@
   </div>
 </div>
 </body>
+<!-- <link rel="script" type="text/js" href="assets/chart.js"> -->
+<script type="text/javascript" src="assets/chart.js"></script>
 </html>
