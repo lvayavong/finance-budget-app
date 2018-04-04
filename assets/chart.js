@@ -1,11 +1,13 @@
-$("button").click(gather);
-$("button").click(console.log("alert"));
-$(document).ready(centerme);
-$(window).resize(centerme);
+
+// $("button").click(gather);
+// $("button").click(console.log("alert"));
+// $(document).ready(centerme);
+// $(window).resize(centerme);
 
 function gather() {
   income = document.getElementById("income").value;
-  income = income.replace(/\D/g,'');
+  // income = income.replace(/\D/g,'');
+  console.log(income);
   rent = document.getElementById("rent").value;
   rent = rent.replace(/\D/g,'');
   utilities = document.getElementById("utilities").value;
@@ -35,12 +37,12 @@ function gather() {
 
 $("#submit").on('click', function(event){
   event.preventDefault();
+  gather();
   console.log("alert");
 })
 
-
-function centerme() {
-boiheight = $(".center-meh-boi").height();
-middle = boiheight / 2;
-$(".center-meh-boi").css("margin-top","-" + middle + "px");
-}
+// function centerme() {
+// boiheight = $(".center-meh-boi").height();
+// middle = boiheight / 2;
+// $(".center-meh-boi").css("margin-top","-" + middle + "px");
+// }
