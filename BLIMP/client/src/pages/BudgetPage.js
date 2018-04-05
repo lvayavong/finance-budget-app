@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { Component, Fragment } from 'react';
 import { List, ListItem } from 'material-ui/List';
 import { withUser } from '../services/withUser';
-
+import Budget from '../components/Budget';
 class BudgetPage extends Component {
   state = {
     stuff: null
@@ -39,6 +39,7 @@ class BudgetPage extends Component {
           <List>
            {stuff.map((s, i) => <ListItem key={i} primaryText={s} />)}
           </List>
+          <Budget />
           </div>
         }
         {user && !stuff &&
