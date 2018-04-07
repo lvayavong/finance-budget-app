@@ -1,5 +1,5 @@
 import React from 'react';
-
+import "./style.css";
 
 
 class Budget extends React.Component { 
@@ -22,10 +22,19 @@ class Budget extends React.Component {
 console.log(this.state);
 
     }
+
     handleSubmit(event) {
-        alert('Budget was submitted: ' + this.state.value);
+       const results = this.state.income - this.state.rent - this.state.utilities - this.state.food - this.state.insurance
+        this.setState({
+            result:results
+        })
         event.preventDefault();
+        console.log(results);
+        
     }
+    
+   
+    
     render() {
     return (
         <div>
@@ -40,8 +49,9 @@ console.log(this.state);
                                 <input className="form-control input-lg" type="text" id="food" placeholder="Food"  onChange={this.handleChange} name = "food" />
                                 <input className="form-control input-lg" type="text" id="utilities" placeholder="Utilities"  onChange={this.handleChange} name = "utilities" />
                                 <input className="form-control input-lg" type="text" id="insurance" placeholder="Insurance"  onChange={this.handleChange} name = "insurance" />
+                                <button type="submit" id="submit" className="btn btn-outline-secondary btn-lg">Submit</button>
                         </form>
-                        <button type="button" id="submit" className="btn btn-outline-secondary btn-lg">Submit</button>
+                       
                             <button data-balloon="Whats up!" data-balloon-pos="up">Hover me!</button>
                         
       </div>
