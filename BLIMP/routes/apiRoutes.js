@@ -91,6 +91,139 @@ router.route('/budget')
       'Fear The Walking Dead'
     ]);
   });
+// db.Account.create({ name: "Budget Manager" })
+//   .then(function (dbAccount) {
+//     // If saved successfully, print the new Account document to the console
+//     console.log(dbAccount);
+//   })
+//   .catch(function (err) {
+//     // If an error occurs, print it to the console
+//     console.log(err.message);
+//   });
 
+// // Routes
+
+// // POST route for saving a new Budget to the db and associating it with a Account
+// router.post("/submit", function (req, res) {
+//   // Create a new Budget in the database
+//   db.Budget.create(req.body)
+//     .then(function (dbBudget) {
+//       // If a Budget was created successfully, find one Account (there's only one) and push the new Budget's _id to the Account's `Budgets` array
+//       // { new: true } tells the query that we want it to return the updated Account -- it returns the original by default
+//       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+//       return db.Account.findOneAndUpdate({}, { $push: { budgets: dbBudget._id } }, { new: true });
+//     })
+//     .then(function (dbAccount) {
+//       // If the Account was updated successfully, send it back to the client
+//       res.json(dbAccount);
+//     })
+//     .catch(function (err) {
+//       // If an error occurs, send it back to the client
+//       res.json(err);
+//     });
+// });
+
+// router.post("/update/:id", function (req, res) {
+//   console.log(req.body);
+
+//   db.Budget.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true },
+
+//     (err, budget) => {
+//       // Handle any possible database errors
+//       if (err) return res.status(500).send(err);
+//       return res.send(budget);
+//     }
+//   )
+// })
+// router.post("/updateclient/:client", function (req, res) {
+//   console.log(req.body);
+
+//   db.Budget.findOneAndUpdate({
+//     client: req.params.client
+//   }, req.body, {
+//       new: true
+//     },
+
+//     (err, budget) => {
+//       // Handle any possible database errors
+//       if (err) return res.status(500).send(err);
+//       return res.send(budget);
+//     }
+//   )
+// })
+// router.get("/removeclient/:client", function (req, res) {
+//   console.log(req.body);
+
+//   db.Budget.findOneAndRemove({
+//     _client: req.params.client
+//   },
+
+//     (err, budget) => {
+//       // Handle any possible database errors
+//       if (err) return res.status(500).send(err);
+//       return res.send(budget);
+//     }
+//   )
+// })
+// router.get("/removeall/", function (req, res) {
+//   console.log(req.body);
+
+//   db.Budget.remove({},
+
+//     (err, budget) => {
+//       // Handle any possible database errors
+//       if (err) return res.status(500).send(err);
+//       return res.send(budget);
+//     }
+//   )
+// })
+// // Route for getting all Budgets from the db
+// router.get("/budgets", function (req, res) {
+//   // Using our Budget model, "find" every Budget in our db
+//   db.Budget.find({})
+//     .then(function (dbBudget) {
+//       // If any Budgets are found, send them to the client
+//       res.json(dbBudget);
+//     })
+//     .catch(function (err) {
+//       // If an error occurs, send it back to the client
+//       res.json(err);
+//     });
+// });
+
+// // Route for getting all libraries from the db
+// router.get("/account", function (req, res) {
+//   // Using our Account model, "find" every Account in our db
+//   db.Account.find({})
+//     .then(function (dbAccount) {
+//       // If any Libraries are found, send them to the client
+//       res.json(dbAccount);
+//     })
+//     .catch(function (err) {
+//       // If an error occurs, send it back to the client
+//       res.json(err);
+//     });
+// });
+
+// // Route to see what Account looks like WITH populating
+// router.get("/populated", function (req, res) {
+//   // Using our Account model, "find" every Account in our db and populate them with any associated Budgets
+//   db.Account.find({})
+//     // Specify that we want to populate the retrieved libraries with any associated Budgets
+//     .populate("budgets")
+//     .then(function (dbAccount) {
+//       // If any Libraries are found, send them to the client with any associated Budgets
+//       res.json(dbAccount);
+//     })
+//     .catch(function (err) {
+//       // If an error occurs, send it back to the client
+//       res.json(err);
+//     });
+// });
+
+// // Start the server
+// router.listen(PORT, function () {
+//   console.log("App running on port " + PORT + "!");
+// });
 module.exports = router;
 
