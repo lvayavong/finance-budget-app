@@ -6,7 +6,7 @@
 
 function gather() {
   income = document.getElementById("income").value;
-  // income = income.replace(/\D/g,'');
+  income = income.replace(/\D/g,'');
   console.log(income);
   rent = document.getElementById("rent").value;
   rent = rent.replace(/\D/g,'');
