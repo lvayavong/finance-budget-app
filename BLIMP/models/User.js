@@ -20,7 +20,22 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String
-  }
+  },
+  income: {
+    type: Number
+  },
+  rent: {
+    type: Number
+  },
+  food:{
+   type: Number
+ },
+  utilities: {
+   type: Number
+ },
+  insurance: {
+   type: Number
+ }  
 });
 
 // This pre "save" handler will be called before each time the user is saved.

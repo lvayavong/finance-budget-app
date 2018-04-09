@@ -91,15 +91,41 @@ router.route('/budget')
       'Fear The Walking Dead'
     ]);
   });
-// db.Account.create({ name: "Budget Manager" })
-//   .then(function (dbAccount) {
-//     // If saved successfully, print the new Account document to the console
-//     console.log(dbAccount);
-//   })
-//   .catch(function (err) {
-//     // If an error occurs, print it to the console
-//     console.log(err.message);
-//   });
+router.route('/budget')
+  // POST to /api/users will create a new user
+  .post((req, res, next) => {
+    db.User.update({id:req.body.id},
+      {income:req.body.income, 
+        rent:req.body.rent, 
+        food:req.body.food, 
+        utilities:req.body.utilities, 
+        insurance: req.body.insurance,
+        result: req.body.result
+      },
+      null,
+      (err, data) => {
+        if (err) {
+          console.log(err);
+          
+          res.status(400).json({
+            message: 'Error.'
+          })
+        }
+        return data
+      }
+    )
+      .then(user => {
+        res.json(user);
+      })
+      .catch(err => {
+        
+
+        // otherwise, it's some nasty unexpected error, so we'll just send it off to
+        // to the next middleware to handle the error.
+        next(err);
+      });
+  });
+
 
 // // Routes
 
