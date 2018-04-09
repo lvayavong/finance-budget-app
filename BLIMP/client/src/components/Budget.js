@@ -1,5 +1,6 @@
 import React from 'react';
 import "./style.css";
+import axios from 'axios';
 
 
 class Budget extends React.Component { 
@@ -30,7 +31,11 @@ console.log(this.state);
         })
         event.preventDefault();
         console.log(results);
-        
+        axios.post(`localhost:3000/budget`, { results })
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+            })
     }
     
    

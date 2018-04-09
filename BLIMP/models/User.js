@@ -28,13 +28,13 @@ const UserSchema = new mongoose.Schema({
     type: Number
   },
   food:{
-   type: Number
+    type: Number
  },
   utilities: {
-   type: Number
+    type: Number
  },
   insurance: {
-   type: Number
+    type: Number
  }  
 });
 
