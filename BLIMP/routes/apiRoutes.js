@@ -125,7 +125,7 @@ router.route('/budget')
         food: req.body.budgetItems.food, 
         utilities: req.body.budgetItems.utilities, 
         insurance: req.body.budgetItems.insurance,
-        result: req.body.budgetItems.result
+        result: req.body.results
       },
       null,
       (err, data) => {

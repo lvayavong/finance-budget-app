@@ -43,7 +43,7 @@ class BudgetPage extends Component {
           </div>
         }
         {user && !budgetItems &&
-          <div>Hold on, looking for your budgetItems...</div>
+          <div>Hold on, looking for your Budget...</div>
         }
         {!user &&
           <div>Hey! I don't recognize you! Register and log in using the link above</div>
