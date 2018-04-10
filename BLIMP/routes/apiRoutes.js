@@ -74,23 +74,24 @@ router.route('/users')
 // to demonstrate that we can ensure a user must be logged in to use a route
 
 
-router.route('/budget')
-  .get(mustBeLoggedIn(), (req, res) => {
-    console.log(req.body);
-    res.json([
-      // 'Brains',
-      // 'Liver',
-      // 'The Walking Dead'
-    ]);
-    db.User.find({ username: req.body.username },
-      {
-        income: req.body.budgetItems.income,
-        rent: req.body.budgetItems.rent,
-        food: req.body.budgetItems.food,
-        utilities: req.body.budgetItems.utilities,
-        insurance: req.body.budgetItems.insurance,
-        result: req.body.budgetItems.result
-      },
+// router.route('/budget')
+//   .get(mustBeLoggedIn(), (req, res) => {
+//     console.log(req.body);
+//     res.json([
+//       // 'Brains',
+//       // 'Liver',
+//       // 'The Walking Dead'
+//     ]);
+    router.route('/budget')
+      .get(mustBeLoggedIn(), (req, res) => {
+        console.log(req.body);
+        // res.json([
+        //   'Brains',
+        //   'Liver',
+        //   'The Walking Dead'
+        // ]);
+    db.User.find({ id: req.body.id},
+
       null,
       (err, data) => {
         if (err) {
@@ -100,7 +101,7 @@ router.route('/budget')
             message: 'Error.'
           })
         }
-        return data
+        res.json(data)
       }
     )
       .then(user => {
@@ -114,7 +115,8 @@ router.route('/budget')
         next(err);
       });
   });
-router.route('/budget')
+  
+router.route('/budget2')
   // POST to /api/users will create a new user
   .post((req, res, next) => {
     console.log(req.body);

@@ -5,7 +5,7 @@ import { withUser } from '../services/withUser';
 
 class HomePage extends Component {
   state = {
-    budgetItems: null
+    budgetItems: []
   }
   componentDidMount() {
     // only try loading budgetItems if the user is logged in.
@@ -15,33 +15,39 @@ class HomePage extends Component {
 
     axios.get('/api/budget')
       .then(res => {
+        console.log(res.data);
+        
         this.setState({
-          budgetItems: res.data
-        });
+          budgetItems: {
+          income: res.data.income || 0,
+          rent: res.data.rent ||  0,
+          food: res.data.food ||  0,
+          utilities: res.data.utilities || 0,
+          insurance: res.data.insurance || 0,
+          results: res.data.results || 0
+        }});
       })
       .catch(err => {
         // if we got an error, we'll just log it and set budgetItems to an empty array
         console.log(err);
-        this.setState({
-          budgetItems: []
-        });
       });
   }
   render() {
     const { user } = this.props; // get the user prop from props
-    const { budgetItems } = this.state; // get budgetItems from state
+    const bItems = this.state.budgetItems; // get budgetItems from state
+    console.log(bItems);
 
     return (
       <Fragment>
-        {user && budgetItems &&
+        {user &&
           <div>
             Welcome back, {user.username}!
           <List>
-           {budgetItems.map((s, i) => <ListItem key={i} primaryText={s} />)}
+            {bItems.map((s, i) => <ListItem key={i} primaryText={s} />)}
           </List>
           </div>
         }
-        {user && !budgetItems &&
+        {user && !bItems &&
           <div>Hold on, looking for your budgetItems...</div>
         }
         {!user &&

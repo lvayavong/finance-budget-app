@@ -34,11 +34,11 @@ console.log(this.state);
         const budgetItems = this.state
         event.preventDefault();
         console.log(results);
-        axios.post(`/api/budget`, { budgetItems,results})
-            .then(res => {
-                console.log(res);
-                console.log(res.data);
-            })
+        // axios.post(`/api/budget`, { budgetItems, results})
+        //     .then(res => {
+        //         console.log(res);
+        //         console.log(res.data);
+        //     })
         axios.get(`/api/budget`, { budgetItems, results})
             .then(res => {
                 console.log(res);
