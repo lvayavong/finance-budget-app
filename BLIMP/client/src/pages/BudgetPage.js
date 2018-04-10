@@ -5,10 +5,10 @@ import { withUser } from '../services/withUser';
 import Budget from '../components/Budget';
 class BudgetPage extends Component {
   state = {
-    stuff: null
+    budgetItems: null
   }
   componentDidMount() {
-    // only try loading stuff if the user is logged in.
+    // only try loading budgetItems if the user is logged in.
     if (!this.props.user) {
       return;
     }
@@ -16,34 +16,34 @@ class BudgetPage extends Component {
     axios.get('/api/budget')
       .then(res => {
         this.setState({
-          stuff: res.data
+          budgetItems: res.data
         });
       })
       .catch(err => {
-        // if we got an error, we'll just log it and set stuff to an empty array
+        // if we got an error, we'll just log it and set budgetItems to an empty array
         console.log(err);
         this.setState({
-          stuff: []
+          budgetItems: []
         });
       });
   }
   render() {
     const { user } = this.props; // get the user prop from props
-    const { stuff } = this.state; // get stuff from state
+    const { budgetItems } = this.state; // get budgetItems from state
 
     return (
       <Fragment>
-        {user && stuff &&
+        {user && budgetItems &&
           <div>
             Welcome back, {user.username}!
           <List>
-           {stuff.map((s, i) => <ListItem key={i} primaryText={s} />)}
+           {budgetItems.map((s, i) => <ListItem key={i} primaryText={s} />)}
           </List>
           <Budget />
           </div>
         }
-        {user && !stuff &&
-          <div>Hold on, looking for your stuff...</div>
+        {user && !budgetItems &&
+          <div>Hold on, looking for your Budget...</div>
         }
         {!user &&
           <div>Hey! I don't recognize you! Register and log in using the link above</div>

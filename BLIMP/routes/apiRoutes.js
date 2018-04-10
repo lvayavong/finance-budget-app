@@ -72,35 +72,62 @@ router.route('/users')
 
 // this route returns an array of strings if the user is logged in
 // to demonstrate that we can ensure a user must be logged in to use a route
-router.route('/stuff')
-  .get(mustBeLoggedIn(), (req, res) => {
-    // at this point we can assume the user is logged in. if not, the mustBeLoggedIn middleware would have caught it
-    res.json([
-      'Brains',
-      'Liver',
-      'The Walking Dead'
-    ]);
-  });
 
-router.route('/budget')
-  .get(mustBeLoggedIn(), (req, res) => {
-    // at this point we can assume the user is logged in. if not, the mustBeLoggedIn middleware would have caught it
-    res.json([
-      'Eyeballs',
-      'Pancreas',
-      'Fear The Walking Dead'
-    ]);
+
+// router.route('/budget')
+//   .get(mustBeLoggedIn(), (req, res) => {
+//     console.log(req.body);
+//     res.json([
+//       // 'Brains',
+//       // 'Liver',
+//       // 'The Walking Dead'
+//     ]);
+    router.route('/budget')
+      .get(mustBeLoggedIn(), (req, res) => {
+        console.log(req.body);
+        // res.json([
+        //   'Brains',
+        //   'Liver',
+        //   'The Walking Dead'
+        // ]);
+    db.User.find({ id: req.body.id},
+
+      null,
+      (err, data) => {
+        if (err) {
+          console.log(err);
+
+          res.status(400).json({
+            message: 'Error.'
+          })
+        }
+        res.json(data)
+      }
+    )
+      .then(user => {
+        res.json(user);
+      })
+      .catch(err => {
+
+
+        // otherwise, it's some nasty unexpected error, so we'll just send it off to
+        // to the next middleware to handle the error.
+        next(err);
+      });
   });
-router.route('/budget')
+  
+router.route('/budget2')
   // POST to /api/users will create a new user
   .post((req, res, next) => {
+    console.log(req.body);
+    
     db.User.update({id:req.body.id},
-      {income:req.body.income, 
-        rent:req.body.rent, 
-        food:req.body.food, 
-        utilities:req.body.utilities, 
-        insurance: req.body.insurance,
-        result: req.body.result
+      {income:req.body.budgetItems.income, 
+        rent: req.body.budgetItems.rent, 
+        food: req.body.budgetItems.food, 
+        utilities: req.body.budgetItems.utilities, 
+        insurance: req.body.budgetItems.insurance,
+        result: req.body.results
       },
       null,
       (err, data) => {
@@ -126,130 +153,21 @@ router.route('/budget')
       });
   });
 
+router.route('/budget/:id')
+  .get(mustBeLoggedIn(), (req, res) => {
+    db.User
+      .findById(req.params.id)
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  });
 
-// // Routes
-
-// // POST route for saving a new Budget to the db and associating it with a Account
-// router.post("/submit", function (req, res) {
-//   // Create a new Budget in the database
-//   db.Budget.create(req.body)
-//     .then(function (dbBudget) {
-//       // If a Budget was created successfully, find one Account (there's only one) and push the new Budget's _id to the Account's `Budgets` array
-//       // { new: true } tells the query that we want it to return the updated Account -- it returns the original by default
-//       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-//       return db.Account.findOneAndUpdate({}, { $push: { budgets: dbBudget._id } }, { new: true });
-//     })
-//     .then(function (dbAccount) {
-//       // If the Account was updated successfully, send it back to the client
-//       res.json(dbAccount);
-//     })
-//     .catch(function (err) {
-//       // If an error occurs, send it back to the client
-//       res.json(err);
-//     });
-// });
-
-// router.post("/update/:id", function (req, res) {
-//   console.log(req.body);
-
-//   db.Budget.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true },
-
-//     (err, budget) => {
-//       // Handle any possible database errors
-//       if (err) return res.status(500).send(err);
-//       return res.send(budget);
-//     }
-//   )
-// })
-// router.post("/updateclient/:client", function (req, res) {
-//   console.log(req.body);
-
-//   db.Budget.findOneAndUpdate({
-//     client: req.params.client
-//   }, req.body, {
-//       new: true
-//     },
-
-//     (err, budget) => {
-//       // Handle any possible database errors
-//       if (err) return res.status(500).send(err);
-//       return res.send(budget);
-//     }
-//   )
-// })
-// router.get("/removeclient/:client", function (req, res) {
-//   console.log(req.body);
-
-//   db.Budget.findOneAndRemove({
-//     _client: req.params.client
-//   },
-
-//     (err, budget) => {
-//       // Handle any possible database errors
-//       if (err) return res.status(500).send(err);
-//       return res.send(budget);
-//     }
-//   )
-// })
-// router.get("/removeall/", function (req, res) {
-//   console.log(req.body);
-
-//   db.Budget.remove({},
-
-//     (err, budget) => {
-//       // Handle any possible database errors
-//       if (err) return res.status(500).send(err);
-//       return res.send(budget);
-//     }
-//   )
-// })
-// // Route for getting all Budgets from the db
-// router.get("/budgets", function (req, res) {
-//   // Using our Budget model, "find" every Budget in our db
-//   db.Budget.find({})
-//     .then(function (dbBudget) {
-//       // If any Budgets are found, send them to the client
-//       res.json(dbBudget);
-//     })
-//     .catch(function (err) {
-//       // If an error occurs, send it back to the client
-//       res.json(err);
-//     });
-// });
-
-// // Route for getting all libraries from the db
-// router.get("/account", function (req, res) {
-//   // Using our Account model, "find" every Account in our db
-//   db.Account.find({})
-//     .then(function (dbAccount) {
-//       // If any Libraries are found, send them to the client
-//       res.json(dbAccount);
-//     })
-//     .catch(function (err) {
-//       // If an error occurs, send it back to the client
-//       res.json(err);
-//     });
-// });
-
-// // Route to see what Account looks like WITH populating
-// router.get("/populated", function (req, res) {
-//   // Using our Account model, "find" every Account in our db and populate them with any associated Budgets
-//   db.Account.find({})
-//     // Specify that we want to populate the retrieved libraries with any associated Budgets
-//     .populate("budgets")
-//     .then(function (dbAccount) {
-//       // If any Libraries are found, send them to the client with any associated Budgets
-//       res.json(dbAccount);
-//     })
-//     .catch(function (err) {
-//       // If an error occurs, send it back to the client
-//       res.json(err);
-//     });
-// });
-
-// // Start the server
-// router.listen(PORT, function () {
-//   console.log("App running on port " + PORT + "!");
-// });
+router.route('/budget')
+  .post((req, res) => {
+    console.log('req.body', req.body);
+    db.User
+      .findOneAndUpdate({ _id: req.body.id }, req.body.budgetItems)
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  });
 module.exports = router;
 

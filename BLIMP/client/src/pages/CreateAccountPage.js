@@ -8,6 +8,8 @@ class CreateAccountPage extends Component {
   state = {
     username: null,
     password: null,
+    budgetItems: ["0","0","0","0","0"],
+    results: 0,
     error: null
   }
   handleInputChanged = (event) => {
@@ -18,7 +20,7 @@ class CreateAccountPage extends Component {
   handleLogin = (event) => {
     event.preventDefault();
 
-    const { username, password } = this.state;
+    const { username, password, budgetItems, results } = this.state;
     const { history } = this.props;
 
     // clear any previous errors so we don't confuse the user
@@ -39,7 +41,11 @@ class CreateAccountPage extends Component {
     // post an auth request
     axios.post('/api/users', {
       username,
-      password
+      password,
+      budgetItems,
+      results
+
+
     })
       .then(user => {
         // if the response is successful, make them log in

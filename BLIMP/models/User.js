@@ -35,6 +35,9 @@ const UserSchema = new mongoose.Schema({
  },
   insurance: {
     type: Number
+ },
+  result: {
+   type: Number
  }  
 });
 

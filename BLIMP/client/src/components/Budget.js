@@ -23,19 +23,27 @@ class Budget extends React.Component {
 console.log(this.state);
 
     }
-
+ 
     handleSubmit(event) {
        const results = this.state.income - this.state.rent - this.state.utilities - this.state.food - this.state.insurance
-        this.setState({
+       
+       this.setState({
             result:results
+
         })
+        const budgetItems = this.state
         event.preventDefault();
         console.log(results);
-        axios.post(`localhost:3000/budget`, { results })
+        // axios.post(`/api/budget`, { budgetItems, results})
+        //     .then(res => {
+        //         console.log(res);
+        //         console.log(res.data);
+        //     })
+        axios.get(`/api/budget`, { budgetItems, results})
             .then(res => {
                 console.log(res);
                 console.log(res.data);
-            })
+            })    
     }
     
    
@@ -43,7 +51,11 @@ console.log(this.state);
     render() {
     return (
         <div>
-<h1>Hello World!</h1>
+            <div class="jumbotron">
+                <h1 className="display-4"><strong>Simple Budgeting</strong></h1>
+                <hr className="my-4"></hr>
+                <p>Learn the basics of creating a budget and save!</p>
+            </div>
         <div className="container-fluid center-meh-boi">
             <div className="row">
                 <div className="col-sm-6 col-sm-offset-1">
