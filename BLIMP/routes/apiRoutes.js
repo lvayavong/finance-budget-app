@@ -72,35 +72,60 @@ router.route('/users')
 
 // this route returns an array of strings if the user is logged in
 // to demonstrate that we can ensure a user must be logged in to use a route
-router.route('/stuff')
-  .get(mustBeLoggedIn(), (req, res) => {
-    // at this point we can assume the user is logged in. if not, the mustBeLoggedIn middleware would have caught it
-    res.json([
-      'Brains',
-      'Liver',
-      'The Walking Dead'
-    ]);
-  });
+
 
 router.route('/budget')
   .get(mustBeLoggedIn(), (req, res) => {
-    // at this point we can assume the user is logged in. if not, the mustBeLoggedIn middleware would have caught it
+    console.log(req.body);
     res.json([
-      'Eyeballs',
-      'Pancreas',
-      'Fear The Walking Dead'
+      // 'Brains',
+      // 'Liver',
+      // 'The Walking Dead'
     ]);
+    db.User.find({ username: req.body.username },
+      {
+        income: req.body.budgetItems.income,
+        rent: req.body.budgetItems.rent,
+        food: req.body.budgetItems.food,
+        utilities: req.body.budgetItems.utilities,
+        insurance: req.body.budgetItems.insurance,
+        result: req.body.budgetItems.result
+      },
+      null,
+      (err, data) => {
+        if (err) {
+          console.log(err);
+
+          res.status(400).json({
+            message: 'Error.'
+          })
+        }
+        return data
+      }
+    )
+      .then(user => {
+        res.json(user);
+      })
+      .catch(err => {
+
+
+        // otherwise, it's some nasty unexpected error, so we'll just send it off to
+        // to the next middleware to handle the error.
+        next(err);
+      });
   });
 router.route('/budget')
   // POST to /api/users will create a new user
   .post((req, res, next) => {
+    console.log(req.body);
+    
     db.User.update({id:req.body.id},
-      {income:req.body.income, 
-        rent:req.body.rent, 
-        food:req.body.food, 
-        utilities:req.body.utilities, 
-        insurance: req.body.insurance,
-        result: req.body.result
+      {income:req.body.budgetItems.income, 
+        rent: req.body.budgetItems.rent, 
+        food: req.body.budgetItems.food, 
+        utilities: req.body.budgetItems.utilities, 
+        insurance: req.body.budgetItems.insurance,
+        result: req.body.budgetItems.result
       },
       null,
       (err, data) => {
